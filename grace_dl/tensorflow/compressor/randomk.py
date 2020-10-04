@@ -32,10 +32,9 @@ class RandomKCompressor(Compressor):
         elemnum = tensor_flatten.get_shape().as_list()[0]
         # all_indices = tf.range(elemnum, dtype=tf.int32)
         k = max(1, int(elemnum * self.compress_ratio))
-        seed = (sum([ord(s) for s in tensor.name]), tf.train.get_global_step())
-        tf.compat.v1.set_random_seed(1)
-        indices = tf.random.stateless_uniform(
-            [k], seed, minval=0, maxval=elemnum + 1, dtype=tf.int32, name=None
+
+        indices = tf.random.uniform(
+            [k], minval=0, maxval=elemnum + 1, dtype=tf.int32, name=None
         )
         values = tf.gather(tensor_flatten, indices)
         ctx = indices, tensor_shape
